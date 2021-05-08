@@ -20,7 +20,7 @@ Then: `https://worker.example.com/https://blocked.cors.net/resource.jpg?id=1234`
 |Access-Control-Allow-Origin|\*|
 |Access-Control-Expose-Headers|\*|
 
-**Variable Headers** - These headers have special behavior depending if they are used or not
+**Variable Headers** - These headers have special behavior depending if they are used or not during the request
 |Header|Behavior|
 |--|--|
 |Access-Control-Max-Age-Override|*Cloned into* Access-Control-Max-Age|
