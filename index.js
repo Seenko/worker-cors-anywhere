@@ -27,7 +27,7 @@ async function handleRequest(request) {
 
   if (!verifyDestinationHostname(destinationURL.hostname)) return new Response(`Blocked destination hostname: ${destinationURL.hostname}`, { status: 403 })
 
-  if (process.env.WCA_REQUIRE_ORIGIN === 'true' && !originUrl) return new Response(`Missing required Origin/X-Requested-With header`, { status: 400 })
+  if (WCA_REQUIRE_ORIGIN === 'true' && !originUrl) return new Response(`Missing required Origin/X-Requested-With header`, { status: 400 })
 
   if (originUrl) {
     try {
@@ -72,8 +72,8 @@ function validateURL(url) {
  * @return {bool} True or False wether the hostname is blocked or not
  */
 function verifyDestinationHostname(hostname) {
-  const destinationAllowList = process.env.WCA_DESTINATION_HOSTNAME_ALLOW_LIST ? process.env.WCA_DESTINATION_HOSTNAME_ALLOW_LIST.split(',') : []
-  const destinationBlockList = process.env.WCA_DESTINATION_HOSTNAME_BLOCK_LIST ? process.env.WCA_DESTINATION_HOSTNAME_BLOCK_LIST.split(',') : []
+  const destinationAllowList = WCA_DESTINATION_HOSTNAME_ALLOW_LIST ? WCA_DESTINATION_HOSTNAME_ALLOW_LIST.split(',') : []
+  const destinationBlockList = WCA_DESTINATION_HOSTNAME_BLOCK_LIST ? WCA_DESTINATION_HOSTNAME_BLOCK_LIST.split(',') : []
 
   if (destinationAllowList.length > 0 && !destinationAllowList.includes(hostname)) return false
   if (destinationBlockList.length > 0 && destinationBlockList.includes(hostname)) return false
@@ -88,8 +88,8 @@ function verifyDestinationHostname(hostname) {
  * @return {bool} True or False wether the hostname is blocked or not
  */
  function verifyOriginHostname(hostname) {
-  const originAllowList = process.env.WCA_ORIGIN_HOSTNAME_ALLOW_LIST ? process.env.WCA_ORIGIN_HOSTNAME_ALLOW_LIST.split(',') : []
-  const originBlockList = process.env.WCA_ORIGIN_HOSTNAME_BLOCK_LIST ? process.env.WCA_ORIGIN_HOSTNAME_BLOCK_LIST.split(',') : []
+  const originAllowList = WCA_ORIGIN_HOSTNAME_ALLOW_LIST ? WCA_ORIGIN_HOSTNAME_ALLOW_LIST.split(',') : []
+  const originBlockList = WCA_ORIGIN_HOSTNAME_BLOCK_LIST ? WCA_ORIGIN_HOSTNAME_BLOCK_LIST.split(',') : []
 
   if (originAllowList.length > 0 && !originAllowList.includes(hostname)) return false
   if (originBlockList.length > 0 && originBlockList.includes(hostname)) return false
