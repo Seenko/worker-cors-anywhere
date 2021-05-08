@@ -1,7 +1,7 @@
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Seenko/worker-cors-anywhere)
 # 🗺 `worker-cors-anywhere` 🗺
 
-A Cloudflare Worker that proxies any request and injects certain headers that allows the resource to be accessed from cross origins.
+A [Cloudflare Worker](https://developers.cloudflare.com/workers/learning/how-workers-works) that proxies any request and injects certain headers that allows the resource to be accessed from cross origins.
 
 This worker allows any URL to be proxied, if for some reason an invalid URL is provided, it will return a `400 Bad Request` response containing the faulty URL `string`.
 
