@@ -17,7 +17,8 @@ async function handleRequest(request) {
   let destinationURL = extractProxiedURL(new URL(request.url))
   let originUrl = request.headers.get('Origin') || request.headers.get('X-Requested-With')
 
-  if (!destinationURL) return new Response('worker-cors-anywhere is up and running 👍', { status: 200 })
+  if (!destinationURL)
+  return new Response('worker-cors-anywhere is up and running 👍', { status: 200 })
 
   try {
     destinationURL = validateURL(destinationURL)
@@ -25,9 +26,11 @@ async function handleRequest(request) {
     return new Response(`Invalid destination URL: ${destinationURL}`, { status: 400 })
   }
 
-  if (!verifyDestinationHostname(destinationURL.hostname)) return new Response(`Blocked destination hostname: ${destinationURL.hostname}`, { status: 403 })
+  if (!verifyDestinationHostname(destinationURL.hostname))
+  return new Response(`Blocked destination hostname: ${destinationURL.hostname}`, { status: 403 })
 
-  if (WCA_REQUIRE_ORIGIN === 'true' && !originUrl) return new Response(`Missing required Origin/X-Requested-With header`, { status: 400 })
+  if (typeof WCA_REQUIRE_ORIGIN === 'string' && WCA_REQUIRE_ORIGIN === 'true' && !originUrl)
+  return new Response(`Missing required Origin/X-Requested-With header`, { status: 400 })
 
   if (originUrl) {
     try {
@@ -36,22 +39,13 @@ async function handleRequest(request) {
       return new Response(`Invalid Origin/X-Requested-With URL: ${originUrl}`, { status: 400 })
     }
   
-    if (!verifyOriginHostname(originUrl.hostname)) return new Response(`Blocked origin hostname: ${originUrl.hostname}`, { status: 403 })
+    if (!verifyOriginHostname(originUrl.hostname))
+    return new Response(`Blocked origin hostname: ${originUrl.hostname}`, { status: 403 })
   }
 
   const response = await fetch(destinationURL)
 
   return hijackResponse(response, headers => updateHeaders(request, headers))
-}
-
-/**
- * Check wether an Environment Variable exists or not
- *
- * @param envVar {string} The Environment Variable
- * @return {boolean} True/False if it exists or not
- */
- function envVarExists(envVar) {
-  return (typeof envVar === 'string')
 }
 
 /**
@@ -82,8 +76,8 @@ function validateURL(url) {
  * @return {bool} True or False wether the hostname is blocked or not
  */
 function verifyDestinationHostname(hostname) {
-  const destinationAllowList = envVarExists(WCA_DESTINATION_HOSTNAME_ALLOW_LIST) ? WCA_DESTINATION_HOSTNAME_ALLOW_LIST.split(',') : []
-  const destinationBlockList = envVarExists(WCA_DESTINATION_HOSTNAME_BLOCK_LIST) ? WCA_DESTINATION_HOSTNAME_BLOCK_LIST.split(',') : []
+  const destinationAllowList = (typeof WCA_DESTINATION_HOSTNAME_ALLOW_LIST === 'string') ? WCA_DESTINATION_HOSTNAME_ALLOW_LIST.split(',') : []
+  const destinationBlockList = (typeof WCA_DESTINATION_HOSTNAME_BLOCK_LIST === 'string') ? WCA_DESTINATION_HOSTNAME_BLOCK_LIST.split(',') : []
 
   if (destinationAllowList.length > 0 && !destinationAllowList.includes(hostname)) return false
   if (destinationBlockList.length > 0 && destinationBlockList.includes(hostname)) return false
@@ -98,8 +92,8 @@ function verifyDestinationHostname(hostname) {
  * @return {bool} True or False wether the hostname is blocked or not
  */
  function verifyOriginHostname(hostname) {
-  const originAllowList = envVarExists(WCA_ORIGIN_HOSTNAME_ALLOW_LIST) ? WCA_ORIGIN_HOSTNAME_ALLOW_LIST.split(',') : []
-  const originBlockList = envVarExists(WCA_ORIGIN_HOSTNAME_BLOCK_LIST) ? WCA_ORIGIN_HOSTNAME_BLOCK_LIST.split(',') : []
+  const originAllowList = (typeof WCA_ORIGIN_HOSTNAME_ALLOW_LIST === 'string') ? WCA_ORIGIN_HOSTNAME_ALLOW_LIST.split(',') : []
+  const originBlockList = (typeof WCA_ORIGIN_HOSTNAME_BLOCK_LIST === 'string') ? WCA_ORIGIN_HOSTNAME_BLOCK_LIST.split(',') : []
 
   if (originAllowList.length > 0 && !originAllowList.includes(hostname)) return false
   if (originBlockList.length > 0 && originBlockList.includes(hostname)) return false
