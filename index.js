@@ -55,7 +55,7 @@ function validateProxiedURL(url) {
 /**
  * Verifies URL domain agains allow/block lists
  *
- * @param url {urk} The URL that's being checked
+ * @param url {url} The URL that's being checked
  * @return {bool} URL object for specified URL string
  */
 function verifyLists(url) {
@@ -105,8 +105,7 @@ function hijackResponse(response, headerFunction) {
 }
 
 /**
- * Clones response headers and adds required
- * headers to enable CORS anywhere
+ * Adds required and optional headers to enable CORS
  *
  * @param request {request} Original resource request
  * @param headers {headers} Response headers object
