@@ -1,5 +1,5 @@
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Seenko/worker-cors-anywhere)
-# 🗺 `worker-cors-anywhere` 🗺
+# ⚒🗺 `worker-cors-anywhere` 🗺⚒
 
 A [Cloudflare Worker](https://developers.cloudflare.com/workers/learning/how-workers-works) that proxies any request and injects certain headers that allows the resource to be accessed from cross origins.
 
