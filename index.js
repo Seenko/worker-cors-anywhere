@@ -91,7 +91,7 @@ function verifyDestinationHostname(hostname) {
  * @param hostname {string} The hostname that's being checked
  * @return {bool} True or False wether the hostname is blocked or not
  */
- function verifyOriginHostname(hostname) {
+function verifyOriginHostname(hostname) {
   const originAllowList = (typeof WCA_ORIGIN_HOSTNAME_ALLOW_LIST === 'string') ? WCA_ORIGIN_HOSTNAME_ALLOW_LIST.split(',') : []
   const originBlockList = (typeof WCA_ORIGIN_HOSTNAME_BLOCK_LIST === 'string') ? WCA_ORIGIN_HOSTNAME_BLOCK_LIST.split(',') : []
 
