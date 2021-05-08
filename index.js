@@ -148,7 +148,7 @@ function updateHeaders(request, headers) {
   headers.set('Access-Control-Allow-Origin', '*')
 
   const accessControlMaxAgeOverride = request.headers.get('Access-Control-Max-Age-Override')
-  if (request.method === 'OPTIONS' && accessControlMaxAge) headers.set('Access-Control-Max-Age', accessControlMaxAgeOverride)
+  if (request.method === 'OPTIONS' && accessControlMaxAgeOverride) headers.set('Access-Control-Max-Age', accessControlMaxAgeOverride)
 
   const accessControlRequestMethods = request.headers.get('Access-Control-Request-Methods')
   if (accessControlRequestMethods) headers.set('Access-Control-Allow-Methods', accessControlRequestMethods)
