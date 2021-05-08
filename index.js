@@ -45,6 +45,16 @@ async function handleRequest(request) {
 }
 
 /**
+ * Check wether an Environment Variable exists or not
+ *
+ * @param envVar {string} The Environment Variable
+ * @return {boolean} True/False if it exists or not
+ */
+ function envVarExists(envVar) {
+  return (typeof envVar === 'string')
+}
+
+/**
  * Exctracts URL from request url for the resource that will be proxied
  *
  * @param url {string} A string for the request URL
@@ -72,8 +82,8 @@ function validateURL(url) {
  * @return {bool} True or False wether the hostname is blocked or not
  */
 function verifyDestinationHostname(hostname) {
-  const destinationAllowList = WCA_DESTINATION_HOSTNAME_ALLOW_LIST ? WCA_DESTINATION_HOSTNAME_ALLOW_LIST.split(',') : []
-  const destinationBlockList = WCA_DESTINATION_HOSTNAME_BLOCK_LIST ? WCA_DESTINATION_HOSTNAME_BLOCK_LIST.split(',') : []
+  const destinationAllowList = envVarExists(WCA_DESTINATION_HOSTNAME_ALLOW_LIST) ? WCA_DESTINATION_HOSTNAME_ALLOW_LIST.split(',') : []
+  const destinationBlockList = envVarExists(WCA_DESTINATION_HOSTNAME_BLOCK_LIST) ? WCA_DESTINATION_HOSTNAME_BLOCK_LIST.split(',') : []
 
   if (destinationAllowList.length > 0 && !destinationAllowList.includes(hostname)) return false
   if (destinationBlockList.length > 0 && destinationBlockList.includes(hostname)) return false
@@ -88,8 +98,8 @@ function verifyDestinationHostname(hostname) {
  * @return {bool} True or False wether the hostname is blocked or not
  */
  function verifyOriginHostname(hostname) {
-  const originAllowList = WCA_ORIGIN_HOSTNAME_ALLOW_LIST ? WCA_ORIGIN_HOSTNAME_ALLOW_LIST.split(',') : []
-  const originBlockList = WCA_ORIGIN_HOSTNAME_BLOCK_LIST ? WCA_ORIGIN_HOSTNAME_BLOCK_LIST.split(',') : []
+  const originAllowList = envVarExists(WCA_ORIGIN_HOSTNAME_ALLOW_LIST) ? WCA_ORIGIN_HOSTNAME_ALLOW_LIST.split(',') : []
+  const originBlockList = envVarExists(WCA_ORIGIN_HOSTNAME_BLOCK_LIST) ? WCA_ORIGIN_HOSTNAME_BLOCK_LIST.split(',') : []
 
   if (originAllowList.length > 0 && !originAllowList.includes(hostname)) return false
   if (originBlockList.length > 0 && originBlockList.includes(hostname)) return false
