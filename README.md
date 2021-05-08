@@ -5,6 +5,13 @@ A Cloudflare Worker that proxies any request and injects certain headers that al
 
 This worker allows any URL to be proxied, if for some reason an invalid URL is provided, it will return a `400 Bad Request` response containing the faulty URL `string`.
 
+## How to Use
+Once you have this Cloudflare Worker up and running, you can just prepend its url to whatever resource needs CORS.
+
+If my worker is running at: `https://worker.example.com/`  
+The blocked resource is: `https://blocked.cors.net/resource.jpg?id=1234`  
+Then: `https://worker.example.com/https://blocked.cors.net/resource.jpg?id=1234`
+
 ## Injected Headers
 
 **Constant Headers** - Headers that will always be returned in the response
