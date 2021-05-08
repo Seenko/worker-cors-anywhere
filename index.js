@@ -14,19 +14,32 @@ addEventListener('fetch', event => {
  * @returns {Promise<Response>}
  */
 async function handleRequest(request) {
-  let url = extractProxiedURL(new URL(request.url))
+  let destinationURL = extractProxiedURL(new URL(request.url))
+  let originUrl = request.headers.get('Origin') || request.headers.get('X-Requested-With')
 
-  if (!url) return new Response('worker-cors-anywhere', { status: 200 })
+  if (!destinationURL) return new Response('worker-cors-anywhere is up and running 👍', { status: 200 })
 
   try {
-    url = validateProxiedURL(url)
+    destinationURL = validateURL(destinationURL)
   } catch {
-    return new Response(`Invalid URL: ${url}`, { status: 400 })
+    return new Response(`Invalid destination URL: ${destinationURL}`, { status: 400 })
   }
 
-  if (!verifyLists(url)) return new Response(`Blocked hostname: ${url.hostname}`, { status: 403 })
+  if (!verifyDestinationHostname(destinationURL.hostname)) return new Response(`Blocked destination hostname: ${destinationURL.hostname}`, { status: 403 })
 
-  let response = await fetch(url)
+  if (process.env.WCA_REQUIRE_ORIGIN === 'true' && !originUrl) return new Response(`Missing required Origin/X-Requested-With header`, { status: 400 })
+
+  if (originUrl) {
+    try {
+      originUrl = validateURL(originUrl)
+    } catch {
+      return new Response(`Invalid Origin/X-Requested-With URL: ${originUrl}`, { status: 400 })
+    }
+  
+    if (!verifyOriginHostname(originUrl.hostname)) return new Response(`Blocked origin hostname: ${originUrl.hostname}`, { status: 403 })
+  }
+
+  const response = await fetch(destinationURL)
 
   return hijackResponse(response, headers => updateHeaders(request, headers))
 }
@@ -48,22 +61,38 @@ function extractProxiedURL(url) {
  * @param url {string} A string for a possible URL
  * @return {url} URL object for specified URL string
  */
-function validateProxiedURL(url) {
+function validateURL(url) {
   return new URL(url)
 }
 
 /**
- * Verifies URL domain agains allow/block lists
+ * Verifies a requested hostname against an allow/block lists
  *
- * @param url {url} The URL that's being checked
- * @return {bool} URL object for specified URL string
+ * @param hostname {string} The hostname that's being checked
+ * @return {bool} True or False wether the hostname is blocked or not
  */
-function verifyLists(url) {
-  const allowList = process.env.WCA_DOMAIN_ALLOW_LIST ? process.env.WCA_DOMAIN_ALLOW_LIST.split(',') : []
-  const blockList = process.env.WCA_DOMAIN_BLOCK_LIST ? process.env.WCA_DOMAIN_BLOCK_LIST.split(',') : []
+function verifyDestinationHostname(hostname) {
+  const destinationAllowList = process.env.WCA_DESTINATION_HOSTNAME_ALLOW_LIST ? process.env.WCA_DESTINATION_HOSTNAME_ALLOW_LIST.split(',') : []
+  const destinationBlockList = process.env.WCA_DESTINATION_HOSTNAME_BLOCK_LIST ? process.env.WCA_DESTINATION_HOSTNAME_BLOCK_LIST.split(',') : []
 
-  if (allowList.length > 0 && !allowList.includes(url.hostname)) return false
-  if (blockList.length > 0 && blockList.includes(url.hostname)) return false
+  if (destinationAllowList.length > 0 && !destinationAllowList.includes(hostname)) return false
+  if (destinationBlockList.length > 0 && destinationBlockList.includes(hostname)) return false
+
+  return true
+}
+
+/**
+ * Verifies the origin hostname against an allow/block lists
+ *
+ * @param hostname {string} The hostname that's being checked
+ * @return {bool} True or False wether the hostname is blocked or not
+ */
+ function verifyOriginHostname(hostname) {
+  const originAllowList = process.env.WCA_ORIGIN_HOSTNAME_ALLOW_LIST ? process.env.WCA_ORIGIN_HOSTNAME_ALLOW_LIST.split(',') : []
+  const originBlockList = process.env.WCA_ORIGIN_HOSTNAME_BLOCK_LIST ? process.env.WCA_ORIGIN_HOSTNAME_BLOCK_LIST.split(',') : []
+
+  if (originAllowList.length > 0 && !originAllowList.includes(hostname)) return false
+  if (originBlockList.length > 0 && originBlockList.includes(hostname)) return false
 
   return true
 }

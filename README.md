@@ -31,8 +31,11 @@ Then: `https://worker.example.com/https://blocked.cors.net/resource.jpg?id=1234`
 These are the environment variables that are currently supported
 |EnvVar|Description|
 |--|--|
-|WCA_DOMAIN_ALLOW_LIST|List of domains that are allowed in this proxy|
-|WCA_DOMAIN_BLOCK_LIST|List of domains that are blocked in this proxy|
+|WCA_DESTINATION_HOSTNAME_ALLOW_LIST|List of domains that are allowed to be proxied|
+|WCA_DESTINATION_HOSTNAME_BLOCK_LIST|List of domains that are blocked from being proxied|
+|WCA_REQUIRE_ORIGIN|If set to true, either the Origin or X-Requested-With headers are required|
+|WCA_ORIGIN_HOSTNAME_ALLOW_LIST|List of origin domains that are allowed to request a proxied resource|
+|WCA_ORIGIN_HOSTNAME_BLOCK_LIST|List of origin domains that are blocked from requesting a proxied resource|
 
 ## ⚠️ Dependencies Disclaimer ⚠️
 This project currently has only two dependencies, this is because of the [current bugged state of the built-in runtime URL library](https://community.cloudflare.com/t/bug-inconsistent-url-behaviour/98044), which causes URLs to be improperly parsed, example:  
