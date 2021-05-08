@@ -1,10 +1,5 @@
-name = "worker-cors-anywhere-dev"
+name = "worker-cors-anywhere"
 type = "webpack"
-
 account_id = "c01a1865aa9bc7c635b5cf5cbea34907"
 workers_dev = true
 webpack_config = "webpack.config.js"
-
-[env.production]
-name = "worker-cors-anywhere"
-workers_dev = false
