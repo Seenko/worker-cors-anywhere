@@ -8,17 +8,27 @@ This worker allows any fully qualified URL to be proxied, if for some reason an 
 ## How to Use
 Once you have this Cloudflare Worker up and running, you can just prepend its url to whatever resource needs CORS.
 
-If my worker is running at: `https://worker.example.com/`  
-The blocked resource is: `https://blocked.cors.net/resource.jpg?id=1234`  
-Then: `https://worker.example.com/https://blocked.cors.net/resource.jpg?id=1234`
+```javascript
+const corsProxy = 'https://worker.example.com/'
+
+// This is a direct request, which will be blocked.
+myRealRequest('https://blocked.cors.net/resource.jpg?id=1234')
+
+// This is a proxied request, which will _not_ be blocked.
+myRealRequest(`${corsProxy}https://blocked.cors.net/resource.jpg?id=1234`)
+
+function myRealRequest(url) {
+  fetch(url).then(response => myProcessingFunction(response))
+}
+```
 
 ## Injected Headers
 
 **Constant Headers** - Headers that will always be returned in the response
 |Header|Value|
 |--|--|
-|Access-Control-Allow-Origin|\*|
-|Access-Control-Expose-Headers|\*|
+|`Access-Control-Allow-Origin`|\*|
+|`Access-Control-Expose-Headers`|\*|
 
 **Variable Headers** - These headers have special behaviors depending if they are used or not during the request
 |Header|Behavior|
@@ -29,13 +39,13 @@ Then: `https://worker.example.com/https://blocked.cors.net/resource.jpg?id=1234`
 
 ## Environment Variables
 These are the environment variables that are currently supported
-|EnvVar|Description|Response when Triggered|
+|Environment Variable|Description|Response when Triggered|
 |--|--|--|
-|`WCA_DESTINATION_HOSTNAME_ALLOW_LIST`|Comma separated list of domains that are allowed to be proxied|403 Forbidden|
-|`WCA_DESTINATION_HOSTNAME_BLOCK_LIST`|Comma separated list of domains that are blocked from being proxied|403 Forbidden|
-|`WCA_REQUIRE_ORIGIN`|If set to true, either the Origin or X-Requested-With headers are required|400 Bad Request|
-|`WCA_ORIGIN_HOSTNAME_ALLOW_LIST`|Comma separated list of origin domains that are allowed to request a proxied resource|403 Forbidden|
-|`WCA_ORIGIN_HOSTNAME_BLOCK_LIST`|Comma separated list of origin domains that are blocked from requesting a proxied resource|403 Forbidden|
+|`WCA_DESTINATION_HOSTNAME_ALLOW_LIST`|Comma separated list of domains that are allowed to be proxied|`403 Forbidden`|
+|`WCA_DESTINATION_HOSTNAME_BLOCK_LIST`|Comma separated list of domains that are blocked from being proxied|`403 Forbidden`|
+|`WCA_REQUIRE_ORIGIN`|If set to true, either the Origin or X-Requested-With headers are required|`400 Bad Request`|
+|`WCA_ORIGIN_HOSTNAME_ALLOW_LIST`|Comma separated list of origin domains that are allowed to request a proxied resource|`403 Forbidden`|
+|`WCA_ORIGIN_HOSTNAME_BLOCK_LIST`|Comma separated list of origin domains that are blocked from requesting a proxied resource|`403 Forbidden`|
 
 ## ⚠️ Dependencies Disclaimer ⚠️
 This project currently has only two dependencies, this is because of the [current bugged state of the built-in runtime URL library](https://community.cloudflare.com/t/bug-inconsistent-url-behaviour/98044), which causes URLs to be improperly parsed, example:  
